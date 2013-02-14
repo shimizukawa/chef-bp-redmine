@@ -17,10 +17,10 @@
 # limitations under the License.
 #
 
-require_recipe "rvm-redmine"
-require_recipe "rvm-redmine::apache"
-require_recipe "python"      #need for reST
-require_recipe "rvm::gem_packages"
+include_recipe "rvm-redmine"
+include_recipe "rvm-redmine::apache"
+include_recipe "python"      #need for reST
+include_recipe "rvm::gem_package"
 
 # rvm_shell "ruby script/plugin install https://github.com/alminium/redmine_redcarpet_formatter.git" do
 #   cwd node.redmine.path
@@ -30,24 +30,28 @@ require_recipe "rvm::gem_packages"
 # #   version 'master'
 # # end
 
-rvm_shell "bundle install --without development test postgresql sqlite rmagick" do
+rvm_shell "bundle install for bp-redmine" do
   action      :nothing  #TODO not working :nothing
   ruby_string node.rvm_redmine.rvm_name
-  user        node.rvm_redmine.user
-  group       node.rvm_redmine.group
   cwd         node.rvm_redmine.path
+  code        "bundle install --without development test pg postgresql sqlite rmagick"
 end
 
-rvm_eshell "rake db:migrate_plugins" do
+rvm_shell "rake db:migrate_plugins" do
   action      :nothing  #TODO not working :nothing
   ruby_string node.rvm_redmine.rvm_name
   user        node.rvm_redmine.user
   group       node.rvm_redmine.group
   cwd         node.rvm_redmine.path
-  environment ({
-    'RAILS_ENV' => 'production',
-    'REDMINE_LANG' => 'ja',
-  })
+  #environment ({
+  #  'RAILS_ENV' => 'production',
+  #  'REDMINE_LANG' => 'ja',
+  #})
+  code <<-ENDCODE
+    export RAILS_ENV=production
+    export REDMINE_LANG=ja
+    rake --trace db:migrate_plugins
+  ENDCODE
 end
 
 #for redmine_restructuredtext_formatter.
@@ -68,7 +72,7 @@ rvm_shell "ruby script/plugin install https://github.com/alminium/redmine_restru
   user        node.rvm_redmine.user
   group       node.rvm_redmine.group
   cwd         node.rvm_redmine.path
-  notifies    :run, resources(:rvm_shell => "bundle install"), :immediately
+  notifies    :run, resources(:rvm_shell => "bundle install for bp-redmine"), :immediately
   notifies    :run, resources(:rvm_shell => "rake db:migrate_plugins"), :immediately
 end
 
@@ -131,4 +135,5 @@ cookbook_file "#{node.rvm_redmine.path}/config/initializers/99-wiki-cache-patche
   mode "0664"
   owner node.rvm_redmine.user
   group node.rvm_redmine.group
+  notifies :restart, "service[redmine]"
 end
