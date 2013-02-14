@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: bpredmine
+# Cookbook Name:: bp-redmine
 # Recipe:: default
 #
 # Copyright 2013, Takayuki SHIMIZUKAWA
@@ -17,8 +17,8 @@
 # limitations under the License.
 #
 
-require_recipe "redmine"
-require_recipe "redmine::apache"
+require_recipe "rvm-redmine"
+require_recipe "rvm-redmine::apache"
 require_recipe "python"      #need for reST
 require_recipe "rvm::gem_packages"
 
@@ -32,18 +32,18 @@ require_recipe "rvm::gem_packages"
 
 rvm_shell "bundle install --without development test postgresql sqlite rmagick" do
   action      :nothing  #TODO not working :nothing
-  ruby_string node.redmine.rvm_name
-  user        node.redmine.user
-  group       node.redmine.group
-  cwd         node.redmine.path
+  ruby_string node.rvm_redmine.rvm_name
+  user        node.rvm_redmine.user
+  group       node.rvm_redmine.group
+  cwd         node.rvm_redmine.path
 end
 
 rvm_eshell "rake db:migrate_plugins" do
   action      :nothing  #TODO not working :nothing
-  ruby_string node.redmine.rvm_name
-  user        node.redmine.user
-  group       node.redmine.group
-  cwd         node.redmine.path
+  ruby_string node.rvm_redmine.rvm_name
+  user        node.rvm_redmine.user
+  group       node.rvm_redmine.group
+  cwd         node.rvm_redmine.path
   environment ({
     'RAILS_ENV' => 'production',
     'REDMINE_LANG' => 'ja',
@@ -59,15 +59,15 @@ end
 # * http://stackoverflow.com/questions/6368505/bundle-update-stuck-at-fetching-source-index-for-http-rubygems-org
 # * http://robots.thoughtbot.com/post/2729333530/fetching-source-index-for-http-rubygems-org
 rvm_gem 'RbST' do
-  ruby_string node.redmine.rvm_name
+  ruby_string node.rvm_redmine.rvm_name
   version '0.1.3'
 end
 
 rvm_shell "ruby script/plugin install https://github.com/alminium/redmine_restructuredtext_formatter.git" do
-  ruby_string node.redmine.rvm_name
-  user        node.redmine.user
-  group       node.redmine.group
-  cwd         node.redmine.path
+  ruby_string node.rvm_redmine.rvm_name
+  user        node.rvm_redmine.user
+  group       node.rvm_redmine.group
+  cwd         node.rvm_redmine.path
   notifies    :run, resources(:rvm_shell => "bundle install"), :immediately
   notifies    :run, resources(:rvm_shell => "rake db:migrate_plugins"), :immediately
 end
@@ -79,10 +79,10 @@ end
 #   notifies :run, resources(:rvm_shell => "rake db:migrate_plugins")
 # end
 
-python_virtualenv "#{node.redmine.path}/venv" do
+python_virtualenv "#{node.rvm_redmine.path}/venv" do
   interpreter "python2.7"
-  owner node.redmine.user
-  group node.redmine.group
+  owner node.rvm_redmine.user
+  group node.rvm_redmine.group
   action :create
 end
 
@@ -95,40 +95,40 @@ remote_directory "/tmp/rst2parts_ext" do
 end
 
 execute "install blockdiag-redmine-support to venv" do
-  user node.redmine.user
-  group node.redmine.group
-  environment ({'HOME' => node.redmine.user_home})
-  command "#{node.redmine.path}/venv/bin/pip install -U /tmp/blockdiag_redmine_support"
+  user node.rvm_redmine.user
+  group node.rvm_redmine.group
+  environment ({'HOME' => node.rvm_redmine.user_home})
+  command "#{node.rvm_redmine.path}/venv/bin/pip install -U /tmp/blockdiag_redmine_support"
 end
 
 execute "install RbST-extension to venv" do
-  user node.redmine.user
-  group node.redmine.group
-  environment ({'HOME' => node.redmine.user_home})
-  command "#{node.redmine.path}/venv/bin/pip install -U /tmp/rst2parts_ext"
+  user node.rvm_redmine.user
+  group node.rvm_redmine.group
+  environment ({'HOME' => node.rvm_redmine.user_home})
+  command "#{node.rvm_redmine.path}/venv/bin/pip install -U /tmp/rst2parts_ext"
 end
 
-remote_directory "#{node.redmine.path}/vendor/plugins/redmine_restructuredtext_formatter/lib/rst2parts" do
+remote_directory "#{node.rvm_redmine.path}/vendor/plugins/redmine_restructuredtext_formatter/lib/rst2parts" do
   source "rst2parts"
-  owner node.redmine.user
-  group node.redmine.group
-  files_owner node.redmine.user
-  files_group node.redmine.group
+  owner node.rvm_redmine.user
+  group node.rvm_redmine.group
+  files_owner node.rvm_redmine.user
+  files_group node.rvm_redmine.group
 end
 
-template "#{node.redmine.path}/vendor/plugins/redmine_restructuredtext_formatter/lib/rbst.rb" do
+template "#{node.rvm_redmine.path}/vendor/plugins/redmine_restructuredtext_formatter/lib/rbst.rb" do
   source "rbst.rb.erb"
   mode "0644"
-  owner node.redmine.user
-  group node.redmine.group
+  owner node.rvm_redmine.user
+  group node.rvm_redmine.group
   variables({
-    :python_interpreter => "#{node.redmine.path}/venv/bin/python",
+    :python_interpreter => "#{node.rvm_redmine.path}/venv/bin/python",
   })
 end
 
-cookbook_file "#{node.redmine.path}/config/initializers/99-wiki-cache-patches.rb" do
+cookbook_file "#{node.rvm_redmine.path}/config/initializers/99-wiki-cache-patches.rb" do
   action :create
   mode "0664"
-  owner node.redmine.user
-  group node.redmine.group
+  owner node.rvm_redmine.user
+  group node.rvm_redmine.group
 end

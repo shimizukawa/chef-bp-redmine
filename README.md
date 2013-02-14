@@ -1,59 +1,32 @@
-mercurial-env Cookbook
-=========================
+bp-redmine (rvm aware) Cookbook
+================================
 
-This cookbook treat mercurial configurations.
+This cookbook install redmine plugins and set options for BePROUD.
 
 Requirements
 ------------
 
 #### cookbook
-- `mercurial`
+- `rvm`
+- `rvm-redmine`
+- `python`
 
 Attributes
 ----------
-
-`node['mercurial_env']['owner']` - owner for extension and hgrc
-`node['mercurial_env']['hgext_dir']` - extension install dirs: default is .hgext directory under owner's home.
-
-`node['mercurial_env']['hgrc']['path']` - .hgrc file's absolute path: default is $HOME/.hgrc
-`node['mercurial_env']['hgrc']['owner']` - .hgrc owner: set if owner is different with extension owner
-`node['mercurial_env']['hgrc']['username']` - mercurial commit name
-`node['mercurial_env']['hgrc']['hostfingerprints']` - hash as {domain => fingerprint}.
-`node['mercurial_env']['hgrc']['bb]['username']` - bitbucket username
-`node['mercurial_env']['hgrc']['bb]['password']` - bitbucket password if not use 'ssh' node_method.
-`node['mercurial_env']['hgrc']['bb]['node_method']` - 'https' or 'ssh'
-
+nothing.
 
 Usage
 -----
-#### mercurial-env::default
+#### bp-redmine::default
 
-Include `mercurial-env` in your node's `run_list`:
+Include `bp-redmine` in your node's `run_list`:
 
 ```json
 {
   "name":"my_node",
   "run_list": [
-    "recipe[mercurial-env]"
+    "recipe[bp-redmine]"
   ]
-}
-```
-
-If you want to customize parameters, specify override_attributes field.
-
-```json
-{
-  "name":"my_node",
-  "run_list": [
-    "recipe[mercurial-env]"
-  ],
-  "override_attributes" : {
-    "mercurial_env": {
-      "hgrc": {
-        "owner": "foobar"
-      }
-    }
-  }
 }
 ```
 
