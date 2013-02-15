@@ -23,7 +23,7 @@ include_recipe "python"      #need for reST
 include_recipe "rvm::gem_package"
 
 # rvm_shell "ruby script/plugin install https://github.com/alminium/redmine_redcarpet_formatter.git" do
-#   cwd node.redmine.path
+#   cwd "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
 # end
 # # redmine_plugin "https://github.com/alminium/redmine_redcarpet_formatter.git" do
 # #   action :install  #default
@@ -33,7 +33,7 @@ include_recipe "rvm::gem_package"
 rvm_shell "bundle install for bp-redmine" do
   action      :nothing  #TODO not working :nothing
   ruby_string node.rvm_redmine.rvm_name
-  cwd         node.rvm_redmine.path
+  cwd         "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
   code        "bundle install --without development test pg postgresql sqlite rmagick"
 end
 
@@ -42,7 +42,7 @@ rvm_shell "rake db:migrate_plugins" do
   ruby_string node.rvm_redmine.rvm_name
   user        node.rvm_redmine.user
   group       node.rvm_redmine.group
-  cwd         node.rvm_redmine.path
+  cwd         "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
   #environment ({
   #  'RAILS_ENV' => 'production',
   #  'REDMINE_LANG' => 'ja',
@@ -71,7 +71,7 @@ rvm_shell "ruby script/plugin install https://github.com/alminium/redmine_restru
   ruby_string node.rvm_redmine.rvm_name
   user        node.rvm_redmine.user
   group       node.rvm_redmine.group
-  cwd         node.rvm_redmine.path
+  cwd         "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
   notifies    :run, resources(:rvm_shell => "bundle install for bp-redmine"), :immediately
   notifies    :run, resources(:rvm_shell => "rake db:migrate_plugins"), :immediately
 end
@@ -83,7 +83,7 @@ end
 #   notifies :run, resources(:rvm_shell => "rake db:migrate_plugins")
 # end
 
-python_virtualenv "#{node.rvm_redmine.path}/venv" do
+python_virtualenv "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/venv" do
   interpreter "python2.7"
   owner node.rvm_redmine.user
   group node.rvm_redmine.group
@@ -102,17 +102,17 @@ execute "install blockdiag-redmine-support to venv" do
   user node.rvm_redmine.user
   group node.rvm_redmine.group
   environment ({'HOME' => node.rvm_redmine.user_home})
-  command "#{node.rvm_redmine.path}/venv/bin/pip install -U /tmp/blockdiag_redmine_support"
+  command "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/venv/bin/pip install -U /tmp/blockdiag_redmine_support"
 end
 
 execute "install RbST-extension to venv" do
   user node.rvm_redmine.user
   group node.rvm_redmine.group
   environment ({'HOME' => node.rvm_redmine.user_home})
-  command "#{node.rvm_redmine.path}/venv/bin/pip install -U /tmp/rst2parts_ext"
+  command "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/venv/bin/pip install -U /tmp/rst2parts_ext"
 end
 
-remote_directory "#{node.rvm_redmine.path}/vendor/plugins/redmine_restructuredtext_formatter/lib/rst2parts" do
+remote_directory "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/vendor/plugins/redmine_restructuredtext_formatter/lib/rst2parts" do
   source "rst2parts"
   owner node.rvm_redmine.user
   group node.rvm_redmine.group
@@ -120,17 +120,17 @@ remote_directory "#{node.rvm_redmine.path}/vendor/plugins/redmine_restructuredte
   files_group node.rvm_redmine.group
 end
 
-template "#{node.rvm_redmine.path}/vendor/plugins/redmine_restructuredtext_formatter/lib/rbst.rb" do
+template "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/vendor/plugins/redmine_restructuredtext_formatter/lib/rbst.rb" do
   source "rbst.rb.erb"
   mode "0644"
   owner node.rvm_redmine.user
   group node.rvm_redmine.group
   variables({
-    :python_interpreter => "#{node.rvm_redmine.path}/venv/bin/python",
+    :python_interpreter => "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/venv/bin/python",
   })
 end
 
-cookbook_file "#{node.rvm_redmine.path}/config/initializers/99-wiki-cache-patches.rb" do
+cookbook_file "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/config/initializers/99-wiki-cache-patches.rb" do
   action :create
   mode "0664"
   owner node.rvm_redmine.user
