@@ -24,12 +24,12 @@ include_recipe "rvm::gem_package"
 
 # rvm_shell "ruby script/plugin install https://github.com/alminium/redmine_redcarpet_formatter.git" do
 #   cwd "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
-#   notifies :run, "rvm_shell[#{node.rvm_redmine.name} db:migrate_plugins]", :immediately
+#   notifies :run, "rvm_shell[rvm_redmine db:migrate_plugins]", :immediately
 # end
 # # redmine_plugin "https://github.com/alminium/redmine_redcarpet_formatter.git" do
 # #   action :install  #default
 # #   version 'master'
-# #   notifies :run, "rvm_shell[#{node.rvm_redmine.name} db:migrate_plugins]", :immediately
+# #   notifies :run, "rvm_shell[rvm_redmine db:migrate_plugins]", :immediately
 # # end
 
 
@@ -50,15 +50,15 @@ rvm_shell "ruby script/plugin install https://github.com/alminium/redmine_restru
   ruby_string node.rvm_redmine.rvm_name
   user        node.rvm_redmine.user
   cwd         "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
-  notifies    :run, resources(:rvm_shell => "#{node.rvm_redmine.name} bundle install"), :immediately
-  notifies    :run, resources(:rvm_shell => "#{node.rvm_redmine.name} db:migrate_plugins"), :immediately
+  #notifies    :run, resources(:rvm_shell => "rvm_redmine bundle install"), :immediately
+  notifies    :run, resources(:rvm_shell => "rvm_redmine db:migrate_plugins"), :immediately
 end
 
 # rvm_redmine_plugin "https://github.com/alminium/redmine_restructuredtext_formatter.git" do
 #   action :install   #default = :install
 #   version 'master'  #default = nil
-#   notifies    :run, resources(:rvm_shell => "#{node.rvm_redmine.name} bundle install"), :immediately
-#   notifies    :run, resources(:rvm_shell => "#{node.rvm_redmine.name} db:migrate_plugins"), :immediately
+#   #notifies    :run, resources(:rvm_shell => "rvm_redmine bundle install"), :immediately
+#   notifies    :run, resources(:rvm_shell => "rvm_redmine db:migrate_plugins"), :immediately
 # end
 
 python_virtualenv "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/venv" do
