@@ -5,7 +5,8 @@ description      "Installs/Configures bp-redmine"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.1.0"
 
-recipe "bp-redmine", "install redmine plugins for BePROUD."
+recipe "bp-redmine", "install redmine dependencies for BePROUD."
+recipe "bp-redmine::restructuredtext", "install redmine restructuredtext plugins."
 
 depends "rvm"
 depends "rvm-redmine"
