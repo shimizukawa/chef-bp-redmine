@@ -28,8 +28,6 @@ include_recipe "rvm::gem_package"
 #  rvm_home     node.rvm_redmine.user_home
 #  redmone_home "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
 #  user         node.rvm_redmine.user
-#  #notifies     :run, resources(:rvm_shell => "rvm_redmine bundle install"), :immediately
-#  notifies     :run, resources(:rvm_shell => "rvm_redmine db:migrate_plugins"), :immediately
 #end
 
 
@@ -51,8 +49,6 @@ rvm_redmine_plugin "https://github.com/alminium/redmine_restructuredtext_formatt
   rvm_home     node.rvm_redmine.user_home
   redmine_home "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
   user         node.rvm_redmine.user
-  #notifies     :run, resources(:rvm_shell => "rvm_redmine bundle install"), :immediately
-  notifies     :run, resources(:rvm_shell => "rvm_redmine db:migrate_plugins"), :immediately
 end
 
 python_virtualenv "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/venv" do
