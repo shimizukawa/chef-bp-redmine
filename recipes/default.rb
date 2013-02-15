@@ -19,13 +19,4 @@
 
 include_recipe "rvm-redmine"
 include_recipe "rvm-redmine::apache"
-include_recipe "rvm::gem_package"
-
-
-#rvm_redmine_plugin "https://github.com/alminium/redmine_redcarpet_formatter.git" do
-#  rvm_name     node.rvm_redmine.rvm_name
-#  rvm_home     node.rvm_redmine.user_home
-#  redmone_home "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
-#  user         node.rvm_redmine.user
-#end
 
