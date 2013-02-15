@@ -22,15 +22,15 @@ include_recipe "rvm-redmine::apache"
 include_recipe "python"      #need for reST
 include_recipe "rvm::gem_package"
 
-# rvm_shell "ruby script/plugin install https://github.com/alminium/redmine_redcarpet_formatter.git" do
-#   cwd "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
-#   notifies :run, "rvm_shell[rvm_redmine db:migrate_plugins]", :immediately
-# end
-# # redmine_plugin "https://github.com/alminium/redmine_redcarpet_formatter.git" do
-# #   action :install  #default
-# #   version 'master'
-# #   notifies :run, "rvm_shell[rvm_redmine db:migrate_plugins]", :immediately
-# # end
+
+#rvm_redmine_plugin "https://github.com/alminium/redmine_redcarpet_formatter.git" do
+#  rvm_name     node.rvm_redmine.rvm_name
+#  rvm_home     node.rvm_redmine.user_home
+#  redmone_home "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
+#  user         node.rvm_redmine.user
+#  #notifies     :run, resources(:rvm_shell => "rvm_redmine bundle install"), :immediately
+#  notifies     :run, resources(:rvm_shell => "rvm_redmine db:migrate_plugins"), :immediately
+#end
 
 
 #for redmine_restructuredtext_formatter.
@@ -46,20 +46,14 @@ rvm_gem 'RbST' do
   version '0.1.3'
 end
 
-rvm_shell "ruby script/plugin install https://github.com/alminium/redmine_restructuredtext_formatter.git" do
-  ruby_string node.rvm_redmine.rvm_name
-  user        node.rvm_redmine.user
-  cwd         "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
-  #notifies    :run, resources(:rvm_shell => "rvm_redmine bundle install"), :immediately
-  notifies    :run, resources(:rvm_shell => "rvm_redmine db:migrate_plugins"), :immediately
+rvm_redmine_plugin "https://github.com/alminium/redmine_restructuredtext_formatter.git" do
+  rvm_name     node.rvm_redmine.rvm_name
+  rvm_home     node.rvm_redmine.user_home
+  redmine_home "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
+  user         node.rvm_redmine.user
+  #notifies     :run, resources(:rvm_shell => "rvm_redmine bundle install"), :immediately
+  notifies     :run, resources(:rvm_shell => "rvm_redmine db:migrate_plugins"), :immediately
 end
-
-# rvm_redmine_plugin "https://github.com/alminium/redmine_restructuredtext_formatter.git" do
-#   action :install   #default = :install
-#   version 'master'  #default = nil
-#   #notifies    :run, resources(:rvm_shell => "rvm_redmine bundle install"), :immediately
-#   notifies    :run, resources(:rvm_shell => "rvm_redmine db:migrate_plugins"), :immediately
-# end
 
 python_virtualenv "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/venv" do
   interpreter "python2.7"
