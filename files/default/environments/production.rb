@@ -29,9 +29,6 @@ config.action_mailer.raise_delivery_errors = false
 # No email in production log
 config.action_mailer.logger = nil
 
-# Base Url
-config.action_controller.relative_url_root = '/redmine'
-
 # use filesystem cache store for wiki page chaching
 # default is :memory_store, :size => 32.megabytes
 config.action_controller.cache_store = :file_store, "#{RAILS_ROOT}/tmp/cache"
