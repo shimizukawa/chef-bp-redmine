@@ -37,3 +37,11 @@ cookbook_file "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/confi
   group node.rvm_redmine.group
   notifies :restart, "service[redmine]"
 end
+
+remote_directory "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/public/themes/custom_docutils_style" do
+  source "custom_docutils_style"
+  owner node.rvm_redmine.user
+  group node.rvm_redmine.group
+  files_owner node.rvm_redmine.user
+  files_group node.rvm_redmine.group
+end
