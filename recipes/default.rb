@@ -20,3 +20,11 @@
 include_recipe "rvm-redmine"
 include_recipe "rvm-redmine::apache"
 
+cookbook_file "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/config/environments/production.rb" do
+  action :create
+  source "environments/production.rb"
+  mode "0664"
+  owner node.rvm_redmine.user
+  group node.rvm_redmine.group
+  notifies :restart, "service[redmine]"
+end
