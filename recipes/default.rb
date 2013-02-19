@@ -28,3 +28,12 @@ cookbook_file "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/confi
   group node.rvm_redmine.group
   notifies :restart, "service[redmine]"
 end
+
+cookbook_file "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/config/environments/development.rb" do
+  action :create
+  source "environments/development.rb"
+  mode "0664"
+  owner node.rvm_redmine.user
+  group node.rvm_redmine.group
+  notifies :restart, "service[redmine]"
+end
