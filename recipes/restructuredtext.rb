@@ -49,26 +49,19 @@ python_virtualenv "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/v
   action :create
 end
 
-remote_directory "/tmp/blockdiag_redmine_support" do
-  source "blockdiag_redmine_support"
-end
+remote_directory "#{Chef::Config[:file_cache_path]}/blockdiag_redmine_support"
+remote_directory "#{Chef::Config[:file_cache_path]}/rst2parts_ext"
 
-remote_directory "/tmp/rst2parts_ext" do
-  source "rst2parts_ext"
-end
-
-execute "install blockdiag-redmine-support to venv" do
+python_pip "#{Chef::Config[:file_cache_path]}/blockdiag_redmine_support" do
   user node.rvm_redmine.user
   group node.rvm_redmine.group
-  environment ({'HOME' => node.rvm_redmine.user_home})
-  command "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/venv/bin/pip install -U /tmp/blockdiag_redmine_support"
+  virtualenv "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/venv"
 end
 
-execute "install RbST-extension to venv" do
+python_pip "#{Chef::Config[:file_cache_path]}/rst2parts_ext" do
   user node.rvm_redmine.user
   group node.rvm_redmine.group
-  environment ({'HOME' => node.rvm_redmine.user_home})
-  command "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/venv/bin/pip install -U /tmp/rst2parts_ext"
+  virtualenv "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/venv"
 end
 
 remote_directory "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}/vendor/plugins/redmine_restructuredtext_formatter/lib/rst2parts" do
