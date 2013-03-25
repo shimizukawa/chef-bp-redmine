@@ -19,3 +19,6 @@
 
 default['bp_redmine']['lockrun_path'] = '/usr/local/bin/lockrun'
 
+default['bp_redmine']['scm']['mercurial']['repos_path'] = '/var/lib/repo/mercurial'
+default['bp_redmine']['scm']['mercurial']['cmd_path'] = '/usr/bin/hg'
+
