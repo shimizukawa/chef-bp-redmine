@@ -13,7 +13,10 @@ Requirements
 
 Attributes
 ----------
-nothing.
+environment
+
+`node['bp_redmine']['lockrun_path']` - default is '/usr/local/bin/lockrun'
+
 
 Usage
 -----

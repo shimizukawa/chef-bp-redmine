@@ -7,7 +7,7 @@ version          "0.1.0"
 
 recipe "bp-redmine", "install redmine dependencies for BePROUD."
 recipe "bp-redmine::restructuredtext", "install redmine restructuredtext plugins."
-recipe "bp-redmine::lockrun", "install lockrun command for avoiding cron task overrun."
+recipe "bp-redmine::cron", "install lockrun command and set cron tasks."
 
 depends "rvm"
 depends "rvm-redmine"
