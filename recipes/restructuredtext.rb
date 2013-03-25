@@ -37,7 +37,6 @@ end
 
 rvm_redmine_plugin "https://github.com/alminium/redmine_restructuredtext_formatter.git" do
   rvm_name     node.rvm_redmine.rvm_name
-  rvm_home     node.rvm_redmine.user_home
   redmine_home "#{node.rvm_redmine.install_prefix}/#{node.rvm_redmine.name}"
   user         node.rvm_redmine.user
 end
