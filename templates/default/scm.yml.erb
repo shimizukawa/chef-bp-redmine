@@ -1,0 +1,11 @@
+production:
+  deny_delete: true
+  auto_create: true
+  force_repository: false
+  max_repos: 0
+  only_creator: true
+  allow_add_local: false
+  allow_pickup: false
+  mercurial:
+    path: <%= @mercurial['repos_path'] %>
+    hg: <%= @mercurial['cmd_path'] %>
